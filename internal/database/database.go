@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -22,6 +23,8 @@ type Service interface {
 	// Close terminates the database connection.
 	// It returns an error if the connection cannot be closed.
 	Close() error
+	ProjetoRepository
+	TarefaRepository
 }
 
 type service struct {
@@ -45,11 +48,30 @@ func New() Service {
 		// another initialization error.
 		log.Fatal(err)
 	}
-
+	migrations(db)
 	dbInstance = &service{
 		db: db,
 	}
 	return dbInstance
+}
+func migrations(db *sql.DB) error {
+	files, err := os.ReadDir("./migrations")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, file := range files {
+		if filepath.Ext(file.Name()) == ".sql" {
+			content, err := os.ReadFile("./migrations/" + file.Name())
+			if err != nil {
+				return err
+			}
+			_, err = db.Exec(string(content))
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // Health checks the health of the database connection by pinging the database.
