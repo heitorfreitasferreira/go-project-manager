@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type CreateProject struct {
+type createProject struct {
 	ProjectRepository database.ProjetoRepository
 }
 
@@ -23,7 +23,7 @@ type CreateProjectOut struct {
 	ID int
 }
 
-func (c *CreateProject) Execute(input CreateProjectIn) (CreateProjectOut, error) {
+func (c *createProject) Execute(input CreateProjectIn) (CreateProjectOut, error) {
 	projeto := &models.Projeto{
 		Nome:        input.Nome,
 		Descricao:   input.Descricao,

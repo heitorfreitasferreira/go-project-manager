@@ -17,29 +17,16 @@ type Server struct {
 	port int
 
 	db database.Service
-
-	createProject   usecases.CreateProject
-	findProjectById usecases.BuscaProjeto
-	findAllProjects usecases.BuscaTodosProjetos
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	db := database.New()
 
+	usecases.Init(db)
 	NewServer := &Server{
 		port: port,
 		db:   db,
-
-		createProject: usecases.CreateProject{
-			ProjectRepository: db,
-		},
-		findProjectById: usecases.BuscaProjeto{
-			ProjectRepository: db,
-		},
-		findAllProjects: usecases.BuscaTodosProjetos{
-			ProjectRepository: db,
-		},
 	}
 
 	server := &http.Server{

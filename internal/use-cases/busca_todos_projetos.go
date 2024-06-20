@@ -2,7 +2,7 @@ package usecases
 
 import "raw-sqlite/internal/database"
 
-type BuscaTodosProjetos struct {
+type buscaTodosProjetos struct {
 	ProjectRepository database.ProjetoRepository
 }
 
@@ -13,7 +13,7 @@ type BuscaTodosProjetosOut struct {
 type BuscaTodosProjetosIn struct {
 }
 
-func (b *BuscaTodosProjetos) Execute(in BuscaTodosProjetosIn) (BuscaTodosProjetosOut, error) {
+func (b *buscaTodosProjetos) Execute(in BuscaTodosProjetosIn) (BuscaTodosProjetosOut, error) {
 	projetos, err := b.ProjectRepository.GetAllProjeto()
 	if err != nil {
 		return BuscaTodosProjetosOut{}, err

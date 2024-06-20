@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type BuscaProjeto struct {
+type buscaProjeto struct {
 	ProjectRepository database.ProjetoRepository
 }
 
@@ -22,7 +22,7 @@ type BuscaProjetoOut struct {
 	Status      string
 }
 
-func (b *BuscaProjeto) Execute(in BuscaProjetoIn) (BuscaProjetoOut, error) {
+func (b *buscaProjeto) Execute(in BuscaProjetoIn) (BuscaProjetoOut, error) {
 	projeto, err := b.ProjectRepository.GetProjetoByID(in.ID)
 	if err != nil {
 		return BuscaProjetoOut{}, err

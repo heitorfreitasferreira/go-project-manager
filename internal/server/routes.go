@@ -90,7 +90,7 @@ func (s *Server) createProjectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	out, err := s.createProject.Execute(project)
+	out, err := usecases.CreateProject.Execute(project)
 	log.Printf("project created. ID: %d", out.ID)
 	if err != nil {
 		log.Printf("error creating project. Err: %v", err)
@@ -111,7 +111,7 @@ func (s *Server) getProjectsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	project, err := s.findProjectById.Execute(usecases.BuscaProjetoIn{ID: idInt})
+	project, err := usecases.BuscaProjeto.Execute(usecases.BuscaProjetoIn{ID: idInt})
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -122,7 +122,7 @@ func (s *Server) getProjectsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) getAllProjectsHandler(w http.ResponseWriter, _ *http.Request) {
-	projects, err := s.findAllProjects.Execute(usecases.BuscaTodosProjetosIn{})
+	projects, err := usecases.BuscaTodosProjetos.Execute(usecases.BuscaTodosProjetosIn{})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
