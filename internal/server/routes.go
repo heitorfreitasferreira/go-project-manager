@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"raw-sqlite/cmd/web"
+	"github.com/heitorfreitasferreira/go-project-manager/cmd/web"
 
 	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
@@ -21,8 +21,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(web.Files))
 	r.Handle("/assets/*", fileServer)
 	r.Get("/web", templ.Handler(web.HelloForm()).ServeHTTP)
+	r.Post("/hello", web.HelloWebHandler)
 	r.Mount("/api", s.apiRouter())
-	// r.Mount("api/project", s.projetoRouter())
 	return r
 }
 

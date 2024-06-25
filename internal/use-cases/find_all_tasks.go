@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"raw-sqlite/internal/database"
-	"raw-sqlite/internal/types"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/database"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/types"
 )
 
 type findAllTasks struct {

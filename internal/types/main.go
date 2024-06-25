@@ -1,7 +1,7 @@
 package types
 
 import (
-	"raw-sqlite/internal/models"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/models"
 	"time"
 )
 

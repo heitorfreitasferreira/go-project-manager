@@ -9,8 +9,8 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
-	"raw-sqlite/internal/database"
-	usecases "raw-sqlite/internal/use-cases"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/database"
+	usecases "github.com/heitorfreitasferreira/go-project-manager/internal/use-cases"
 )
 
 type Server struct {

@@ -3,8 +3,8 @@ package usecases
 import (
 	"database/sql"
 	"log"
-	"raw-sqlite/internal/database"
-	"raw-sqlite/internal/models"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/database"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/models"
 	"time"
 )
 

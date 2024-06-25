@@ -1,6 +1,6 @@
 package usecases
 
-import "raw-sqlite/internal/database"
+import "github.com/heitorfreitasferreira/go-project-manager/internal/database"
 
 type findAllProjects struct {
 	projectRepository database.ProjectRepository

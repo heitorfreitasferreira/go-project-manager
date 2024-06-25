@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"raw-sqlite/internal/server"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/server"
 )
 
 func main() {

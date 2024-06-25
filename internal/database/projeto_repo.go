@@ -1,6 +1,6 @@
 package database
 
-import "raw-sqlite/internal/models"
+import "github.com/heitorfreitasferreira/go-project-manager/internal/models"
 
 // ProjectRepository define os métodos para manipular Projetos
 type ProjectRepository interface {

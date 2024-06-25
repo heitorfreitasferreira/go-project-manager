@@ -3,7 +3,7 @@ package server
 import (
 	"encoding/json"
 	"net/http"
-	usecases "raw-sqlite/internal/use-cases"
+	usecases "github.com/heitorfreitasferreira/go-project-manager/internal/use-cases"
 
 	"github.com/go-chi/chi/v5"
 )

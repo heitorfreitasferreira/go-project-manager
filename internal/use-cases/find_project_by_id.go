@@ -1,7 +1,7 @@
 package usecases
 
 import (
-	"raw-sqlite/internal/database"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/database"
 	"time"
 )
 

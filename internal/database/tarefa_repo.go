@@ -1,6 +1,6 @@
 package database
 
-import "raw-sqlite/internal/models"
+import "github.com/heitorfreitasferreira/go-project-manager/internal/models"
 
 type TaskRepository interface {
 	CreateTask(tarefa *models.Task) error

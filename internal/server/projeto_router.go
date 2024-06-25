@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	usecases "raw-sqlite/internal/use-cases"
+	usecases "github.com/heitorfreitasferreira/go-project-manager/internal/use-cases"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
