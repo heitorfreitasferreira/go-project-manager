@@ -34,3 +34,4 @@ main
 # Db
 *.db
 *.db-journal
+*.session.sql
