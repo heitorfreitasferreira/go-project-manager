@@ -1,15 +1,61 @@
 package web
 
-templ HelloForm() {
+import (
+	"github.com/heitorfreitasferreira/go-project-manager/internal/types"
+	// "github.com/heitorfreitasferreira/go-project-manager/internal/models"
+)
+
+templ ViewProjects() {
 	@Base() {
-		<form hx-post="/hello" method="POST" hx-target="#hello-container">
-			<input id="name" name="name" type="text"/>
-			<button type="submit">Submit</button>
-		</form>
-		<div id="hello-container"></div>
+		<div hx-get="/htmx/projects" hx-trigger="load" hx-swap="outerHTML">
+			<img src="/assets/svg/loading.svg" class="htmx-indicator" alt="loading" width="120px">
+		</div>
 	}
 }
 
 templ HelloPost(name string) {
 	<div>Hello, { name }</div>
+}
+
+templ ProjectNeehVidaahh(projects []types.Project) {
+	<div>
+		<h1>Projects</h1>
+		<ul>
+			for _, project := range projects {
+			@ViewSingleProject(project)
+			}
+		</ul>
+	</div>
+}
+
+templ ViewSingleProject(project types.Project){
+	<li>
+		<h2>{project.Name}</h2>
+		<p>{project.Description}</p>
+		// if project.Status != models.ProjectDone{
+			@viewTasks(project.Tasks)
+			@taskAdder(project.ID)
+		// }
+	</li>
+}
+
+templ viewTasks(tasks []types.Task){
+	<ul>
+		for _, task := range tasks {
+			<li>
+				<h3>{task.Title}</h3>
+				<p>{task.Description}</p>
+			</li>
+		}
+	</ul>
+}
+
+templ taskAdder(projectID int){
+	<form hx-post="/htmx/tasks/{projectID}" hx-trigger="submit" hx-swap="outerHTML">
+		<input type="text" name="title" placeholder="Task title">
+		<input type="text" name="description" placeholder="Task description">
+		<input type="datetime-local" id="start_time" name="start_time">
+		<input type="datetime-local" id="end_time" name="end_time">
+		<button type="submit">Add Task</button>
+	</form>
 }
