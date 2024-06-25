@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/a-h/templ"
 	"github.com/heitorfreitasferreira/go-project-manager/cmd/web"
 
 	"github.com/go-chi/chi/v5"
@@ -17,10 +18,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.Get("/health", s.healthHandler)
 
-	fileServer := http.FileServer(http.FS(web.Files))
-	r.Handle("/assets/*", fileServer)
-	r.Get("/hello", web.BaseWebHandler)
+	r.Handle("/assets/*", http.FileServer(http.FS(web.Files)))
+	r.Get("/", templ.Handler(web.ViewProjects()).ServeHTTP)
+	// r.Get("/htmx/projects", web.ViewProjectsHandler)
+
+	r.Post("/hello", web.HelloWebHandler)
 	r.Mount("/api", s.apiRouter())
+	r.Mount("/htmx", s.htmxRouter())
 	return r
 }
 
@@ -34,5 +38,12 @@ func (s *Server) apiRouter() http.Handler {
 
 	r.Mount("/project", s.projetoRouter())
 	r.Mount("/task", s.taskRouter())
+	return r
+}
+
+func (s *Server) htmxRouter() http.Handler {
+	r := chi.NewRouter()
+	r.Get("/projects", web.ViewProjectsHandler)
+	r.Post("/tasks/{id}", web.AddTaskHandler)
 	return r
 }
