@@ -6,12 +6,10 @@ import (
 )
 
 type buscaProjeto struct {
-	ProjectRepository database.ProjetoRepository
+	projectRepository database.ProjectRepository
 }
 
-type BuscaProjetoIn struct {
-	ID int
-}
+type BuscaProjetoIn int
 
 type BuscaProjetoOut struct {
 	ID          int
@@ -23,17 +21,17 @@ type BuscaProjetoOut struct {
 }
 
 func (b *buscaProjeto) Execute(in BuscaProjetoIn) (BuscaProjetoOut, error) {
-	projeto, err := b.ProjectRepository.GetProjetoByID(in.ID)
+	projeto, err := b.projectRepository.GetProjectoByID(int(in))
 	if err != nil {
 		return BuscaProjetoOut{}, err
 	}
 
 	return BuscaProjetoOut{
 		ID:          projeto.ID,
-		Nome:        projeto.Nome,
-		Descricao:   projeto.Descricao,
-		DataInicio:  projeto.DataInicio,
-		DataTermino: projeto.DataTermino,
+		Nome:        projeto.Nome.String,
+		Descricao:   projeto.Descricao.String,
+		DataInicio:  projeto.DataInicio.Time,
+		DataTermino: projeto.DataTermino.Time,
 		Status:      string(projeto.Status),
 	}, nil
 }

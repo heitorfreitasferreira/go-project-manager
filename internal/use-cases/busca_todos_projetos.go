@@ -3,32 +3,30 @@ package usecases
 import "raw-sqlite/internal/database"
 
 type buscaTodosProjetos struct {
-	ProjectRepository database.ProjetoRepository
+	projectRepository database.ProjectRepository
 }
 
-type BuscaTodosProjetosOut struct {
-	Projetos []BuscaProjetoOut
-}
+type BuscaTodosProjetosOut []BuscaProjetoOut
 
 type BuscaTodosProjetosIn struct {
 }
 
 func (b *buscaTodosProjetos) Execute(in BuscaTodosProjetosIn) (BuscaTodosProjetosOut, error) {
-	projetos, err := b.ProjectRepository.GetAllProjeto()
+	projetos, err := b.projectRepository.GetAllProject()
 	if err != nil {
-		return BuscaTodosProjetosOut{}, err
+		return []BuscaProjetoOut{}, err
 	}
 
 	var projetosOut []BuscaProjetoOut
 	for _, projeto := range projetos {
 		projetosOut = append(projetosOut, BuscaProjetoOut{
 			ID:          projeto.ID,
-			Nome:        projeto.Nome,
-			Descricao:   projeto.Descricao,
-			DataInicio:  projeto.DataInicio,
-			DataTermino: projeto.DataTermino,
+			Nome:        projeto.Nome.String,
+			Descricao:   projeto.Descricao.String,
+			DataInicio:  projeto.DataInicio.Time,
+			DataTermino: projeto.DataTermino.Time,
 		})
 	}
 
-	return BuscaTodosProjetosOut{Projetos: projetosOut}, nil
+	return projetosOut, nil
 }

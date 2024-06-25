@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"database/sql"
 	"log"
 	"raw-sqlite/internal/database"
 	"raw-sqlite/internal/models"
@@ -8,7 +9,7 @@ import (
 )
 
 type createProject struct {
-	ProjectRepository database.ProjetoRepository
+	projectRepository database.ProjectRepository
 }
 
 type CreateProjectIn struct {
@@ -24,15 +25,15 @@ type CreateProjectOut struct {
 }
 
 func (c *createProject) Execute(input CreateProjectIn) (CreateProjectOut, error) {
-	projeto := &models.Projeto{
-		Nome:        input.Nome,
-		Descricao:   input.Descricao,
-		DataInicio:  input.DataInicio,
-		DataTermino: input.DataTermino,
+	projeto := &models.Project{
+		Nome:        sql.NullString{String: input.Nome, Valid: true},
+		Descricao:   sql.NullString{String: input.Descricao, Valid: true},
+		DataInicio:  sql.NullTime{Time: input.DataInicio, Valid: true},
+		DataTermino: sql.NullTime{Time: input.DataTermino, Valid: true},
 		Status:      models.ToProjectStatus(input.Status),
 	}
 
-	err := c.ProjectRepository.CreateProjeto(projeto)
+	err := c.projectRepository.CreateProject(projeto)
 	if err != nil {
 		log.Default().Printf("error creating project. Err: %v", err)
 		return CreateProjectOut{}, err
