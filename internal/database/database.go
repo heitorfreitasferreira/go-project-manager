@@ -23,8 +23,8 @@ type Service interface {
 	// Close terminates the database connection.
 	// It returns an error if the connection cannot be closed.
 	Close() error
-	ProjetoRepository
-	TarefaRepository
+	ProjectRepository
+	TaskRepository
 }
 
 type service struct {

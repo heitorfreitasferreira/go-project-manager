@@ -12,13 +12,13 @@ const (
 	Completed  TaskStatus = "COMPLETED"
 )
 
-type Tarefa struct {
+type Task struct {
 	ID          int
-	Nome        sql.NullString
-	Descricao   sql.NullString
-	Responsavel sql.NullString
-	DataInicio  sql.NullTime
-	DataTermino sql.NullTime
+	Name        sql.NullString
+	Description sql.NullString
+	Owner       sql.NullString
+	StartDate   sql.NullTime
+	EndDate     sql.NullTime
 	Status      TaskStatus
-	ProjetoID   int
+	ProjectId   int
 }
