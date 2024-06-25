@@ -5,33 +5,33 @@ import (
 	"time"
 )
 
-type buscaProjeto struct {
+type findProjectByID struct {
 	projectRepository database.ProjectRepository
 }
 
-type BuscaProjetoIn int
+type FindProjectByIdIn int
 
-type BuscaProjetoOut struct {
+type FindProjectByIdOut struct {
 	ID          int
-	Nome        string
-	Descricao   string
-	DataInicio  time.Time
-	DataTermino time.Time
+	Name        string
+	Description string
+	StartDate   time.Time
+	EndDate     time.Time
 	Status      string
 }
 
-func (b *buscaProjeto) Execute(in BuscaProjetoIn) (BuscaProjetoOut, error) {
+func (b *findProjectByID) Execute(in FindProjectByIdIn) (FindProjectByIdOut, error) {
 	projeto, err := b.projectRepository.GetProjectoByID(int(in))
 	if err != nil {
-		return BuscaProjetoOut{}, err
+		return FindProjectByIdOut{}, err
 	}
 
-	return BuscaProjetoOut{
+	return FindProjectByIdOut{
 		ID:          projeto.ID,
-		Nome:        projeto.Name.String,
-		Descricao:   projeto.Description.String,
-		DataInicio:  projeto.StartDate.Time,
-		DataTermino: projeto.EndDate.Time,
+		Name:        projeto.Name.String,
+		Description: projeto.Description.String,
+		StartDate:   projeto.StartDate.Time,
+		EndDate:     projeto.EndDate.Time,
 		Status:      string(projeto.Status),
 	}, nil
 }

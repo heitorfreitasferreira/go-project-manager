@@ -47,7 +47,7 @@ func (s *Server) getProjectsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	project, err := usecases.BuscaProjeto.Execute(usecases.BuscaProjetoIn(id))
+	project, err := usecases.FindProjectById.Execute(usecases.FindProjectByIdIn(id))
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -58,7 +58,7 @@ func (s *Server) getProjectsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) getAllProjectsHandler(w http.ResponseWriter, _ *http.Request) {
-	projects, err := usecases.BuscaTodosProjetos.Execute(usecases.BuscaTodosProjetosIn{})
+	projects, err := usecases.FindAllProjects.Execute(usecases.FindProjectsIn{})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

@@ -2,29 +2,29 @@ package usecases
 
 import "raw-sqlite/internal/database"
 
-type buscaTodosProjetos struct {
+type findAllProjects struct {
 	projectRepository database.ProjectRepository
 }
 
-type BuscaTodosProjetosOut []BuscaProjetoOut
+type FindAllProjectsOut []FindProjectByIdOut
 
-type BuscaTodosProjetosIn struct {
+type FindProjectsIn struct {
 }
 
-func (b *buscaTodosProjetos) Execute(in BuscaTodosProjetosIn) (BuscaTodosProjetosOut, error) {
+func (b *findAllProjects) Execute(in FindProjectsIn) (FindAllProjectsOut, error) {
 	projetos, err := b.projectRepository.GetAllProject()
 	if err != nil {
-		return []BuscaProjetoOut{}, err
+		return []FindProjectByIdOut{}, err
 	}
 
-	var projetosOut []BuscaProjetoOut
+	var projetosOut []FindProjectByIdOut
 	for _, projeto := range projetos {
-		projetosOut = append(projetosOut, BuscaProjetoOut{
+		projetosOut = append(projetosOut, FindProjectByIdOut{
 			ID:          projeto.ID,
-			Nome:        projeto.Name.String,
-			Descricao:   projeto.Description.String,
-			DataInicio:  projeto.StartDate.Time,
-			DataTermino: projeto.EndDate.Time,
+			Name:        projeto.Name.String,
+			Description: projeto.Description.String,
+			StartDate:   projeto.StartDate.Time,
+			EndDate:     projeto.EndDate.Time,
 		})
 	}
 

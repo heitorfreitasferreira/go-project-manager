@@ -3,18 +3,18 @@ package usecases
 import "raw-sqlite/internal/database"
 
 var (
-	BuscaProjeto       buscaProjeto
-	CreateProject      createProject
-	BuscaTodosProjetos buscaTodosProjetos
+	FindProjectById findProjectByID
+	CreateProject   createProject
+	FindAllProjects findAllProjects
 
 	FindAllTasks findAllTasks
 	CreateTask   createTask
 )
 
 func Init(repos database.Service) {
-	BuscaProjeto = buscaProjeto{projectRepository: repos}
+	FindProjectById = findProjectByID{projectRepository: repos}
 	CreateProject = createProject{projectRepository: repos}
-	BuscaTodosProjetos = buscaTodosProjetos{projectRepository: repos}
+	FindAllProjects = findAllProjects{projectRepository: repos}
 	FindAllTasks = findAllTasks{taskRepository: repos}
 	CreateTask = createTask{taskRepository: repos}
 }

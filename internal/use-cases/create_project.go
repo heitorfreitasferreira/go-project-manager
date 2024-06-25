@@ -13,10 +13,10 @@ type createProject struct {
 }
 
 type CreateProjectIn struct {
-	Nome        string
-	Descricao   string
-	DataInicio  time.Time
-	DataTermino time.Time
+	Name        string
+	Description string
+	StartDate   time.Time
+	EndDate     time.Time
 	Status      string
 }
 
@@ -26,10 +26,10 @@ type CreateProjectOut struct {
 
 func (c *createProject) Execute(input CreateProjectIn) (CreateProjectOut, error) {
 	projeto := &models.Project{
-		Name:        sql.NullString{String: input.Nome, Valid: true},
-		Description: sql.NullString{String: input.Descricao, Valid: true},
-		StartDate:   sql.NullTime{Time: input.DataInicio, Valid: true},
-		EndDate:     sql.NullTime{Time: input.DataTermino, Valid: true},
+		Name:        sql.NullString{String: input.Name, Valid: true},
+		Description: sql.NullString{String: input.Description, Valid: true},
+		StartDate:   sql.NullTime{Time: input.StartDate, Valid: true},
+		EndDate:     sql.NullTime{Time: input.EndDate, Valid: true},
 		Status:      models.ToProjectStatus(input.Status),
 	}
 
