@@ -3,9 +3,10 @@ package usecases
 import (
 	"database/sql"
 	"log"
+	"time"
+
 	"github.com/heitorfreitasferreira/go-project-manager/internal/database"
 	"github.com/heitorfreitasferreira/go-project-manager/internal/models"
-	"time"
 )
 
 type createProject struct {
@@ -13,11 +14,11 @@ type createProject struct {
 }
 
 type CreateProjectIn struct {
-	Name        string
-	Description string
-	StartDate   time.Time
-	EndDate     time.Time
-	Status      string
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	StartDate   time.Time `json:"start_date"`
+	EndDate     time.Time `json:"end_date"`
+	Status      string    `json:"status"`
 }
 
 type CreateProjectOut struct {

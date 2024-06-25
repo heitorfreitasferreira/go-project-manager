@@ -2,9 +2,10 @@ package usecases
 
 import (
 	"database/sql"
+	"time"
+
 	"github.com/heitorfreitasferreira/go-project-manager/internal/database"
 	"github.com/heitorfreitasferreira/go-project-manager/internal/models"
-	"time"
 )
 
 type createTask struct {
@@ -12,6 +13,7 @@ type createTask struct {
 }
 
 type CreateTaskIn struct {
+	ProjectId   int                `json:"project_id"`
 	Name        string             `json:"name"`
 	Description string             `json:"description"`
 	Owner       string             `json:"owner"`
@@ -29,14 +31,18 @@ func (u createTask) Execute(in CreateTaskIn) (CreateTaskOut, error) {
 	if in.Status == nil {
 		*in.Status = models.NotStarted
 	}
-
-	err := u.taskRepository.CreateTask(&models.Task{
+	project, err := FindProjectById.Execute(FindProjectByIdIn(in.ProjectId))
+	if err != nil {
+		return CreateTaskOut{}, err
+	}
+	err = u.taskRepository.CreateTask(&models.Task{
 		Name:        sql.NullString{String: in.Name, Valid: true},
 		Description: sql.NullString{String: in.Description, Valid: true},
 		Owner:       sql.NullString{String: in.Owner, Valid: true},
 		StartDate:   sql.NullTime{Time: *in.StartDate, Valid: in.StartDate != nil},
 		EndDate:     sql.NullTime{Time: *in.EndDate, Valid: true},
 		Status:      *in.Status,
+		ProjectId:   project.ID,
 	})
 	if err != nil {
 		return CreateTaskOut{}, err
