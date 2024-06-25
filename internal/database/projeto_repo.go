@@ -9,6 +9,7 @@ type ProjectRepository interface {
 	UpdateProject(projeto *models.Project) error
 	DeleteProject(id int) error
 	GetAllProject() ([]*models.Project, error)
+	LoadTasks(projeto *models.Project) error
 }
 
 func (s *service) CreateProject(projeto *models.Project) error {
@@ -24,6 +25,30 @@ func (s *service) GetProjectoByID(id int) (*models.Project, error) {
 		return nil, err
 	}
 	return projeto, nil
+}
+func (s *service) LoadTasks(projeto *models.Project) error {
+	rows, err := s.db.Query("SELECT * FROM tasks WHERE project_id = ?", projeto.ID)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	var tasks []*models.Task
+	for rows.Next() {
+		t := &models.Task{}
+		err = rows.Scan(&t.ID, &t.Name, &t.Description, &t.StartDate, &t.EndDate, &t.Status, &t.ProjectId)
+		if err != nil {
+			return err
+		}
+		tasks = append(tasks, t)
+	}
+
+	if err = rows.Err(); err != nil {
+		return err
+	}
+
+	projeto.Tasks = tasks
+	return nil
 }
 
 func (s *service) UpdateProject(projeto *models.Project) error {

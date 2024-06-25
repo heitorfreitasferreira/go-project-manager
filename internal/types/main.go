@@ -1,8 +1,9 @@
 package types
 
 import (
-	"github.com/heitorfreitasferreira/go-project-manager/internal/models"
 	"time"
+
+	"github.com/heitorfreitasferreira/go-project-manager/internal/models"
 )
 
 type Task struct {

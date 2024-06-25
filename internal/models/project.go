@@ -19,6 +19,7 @@ type Project struct {
 	StartDate   sql.NullTime
 	EndDate     sql.NullTime
 	Status      ProjectStatus
+	Tasks       []*Task
 }
 
 func ToProjectStatus(status string) ProjectStatus {

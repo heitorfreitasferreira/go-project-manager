@@ -6,7 +6,6 @@ import (
 
 	"github.com/heitorfreitasferreira/go-project-manager/cmd/web"
 
-	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -20,8 +19,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	fileServer := http.FileServer(http.FS(web.Files))
 	r.Handle("/assets/*", fileServer)
-	r.Get("/web", templ.Handler(web.HelloForm()).ServeHTTP)
-	r.Post("/hello", web.HelloWebHandler)
+	r.Get("/hello", web.BaseWebHandler)
 	r.Mount("/api", s.apiRouter())
 	return r
 }
