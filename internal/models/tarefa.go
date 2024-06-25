@@ -1,22 +1,24 @@
 package models
 
-import "time"
+import (
+	"database/sql"
+)
 
-type TarefaStatus string
+type TaskStatus string
 
 const (
-	NotStarted TarefaStatus = "NOT_STARTED"
-	InProgress TarefaStatus = "IN_PROGRESS"
-	Completed  TarefaStatus = "COMPLETED"
+	NotStarted TaskStatus = "NOT_STARTED"
+	InProgress TaskStatus = "IN_PROGRESS"
+	Completed  TaskStatus = "COMPLETED"
 )
 
 type Tarefa struct {
 	ID          int
-	Nome        string
-	Descricao   string
-	Responsavel string
-	DataInicio  time.Time
-	DataTermino time.Time
-	Status      TarefaStatus
+	Nome        sql.NullString
+	Descricao   sql.NullString
+	Responsavel sql.NullString
+	DataInicio  sql.NullTime
+	DataTermino sql.NullTime
+	Status      TaskStatus
 	ProjetoID   int
 }

@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"database/sql"
+)
 
 type ProjectStatus string
 
@@ -10,12 +12,12 @@ const (
 	ProjectDone       ProjectStatus = "DONE"
 )
 
-type Projeto struct {
+type Project struct {
 	ID          int
-	Nome        string
-	Descricao   string
-	DataInicio  time.Time
-	DataTermino time.Time
+	Nome        sql.NullString
+	Descricao   sql.NullString
+	DataInicio  sql.NullTime
+	DataTermino sql.NullTime
 	Status      ProjectStatus
 }
 
