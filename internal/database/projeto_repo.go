@@ -1,6 +1,11 @@
 package database
 
-import "github.com/heitorfreitasferreira/go-project-manager/internal/models"
+import (
+	"fmt"
+	"log"
+
+	"github.com/heitorfreitasferreira/go-project-manager/internal/models"
+)
 
 // ProjectRepository define os métodos para manipular Projetos
 type ProjectRepository interface {
@@ -9,7 +14,6 @@ type ProjectRepository interface {
 	UpdateProject(projeto *models.Project) error
 	DeleteProject(id int) error
 	GetAllProject() ([]*models.Project, error)
-	LoadTasks(projeto *models.Project) error
 }
 
 func (s *service) CreateProject(projeto *models.Project) error {
@@ -17,38 +21,44 @@ func (s *service) CreateProject(projeto *models.Project) error {
 		projeto.Name, projeto.Description, projeto.StartDate, projeto.EndDate, projeto.Status)
 	return err
 }
-
 func (s *service) GetProjectoByID(id int) (*models.Project, error) {
-	projeto := &models.Project{}
-	err := s.db.QueryRow("SELECT * FROM projects WHERE id = ?", id).Scan(&projeto.ID, &projeto.Name, &projeto.Description, &projeto.StartDate, &projeto.EndDate, &projeto.Status)
+	query := `SELECT p.id, p.name, p.description, p.start_date, p.end_date, p.status, t.id, t.name, t.description, t.responsible, t.start_date, t.end_date, t.status, t.project_id
+			  FROM projects p
+			  LEFT JOIN tasks t ON p.id = t.project_id 
+			  WHERE p.id = ?`
+	rows, err := s.db.Query(query, id)
 	if err != nil {
 		return nil, err
 	}
-	return projeto, nil
-}
-func (s *service) LoadTasks(projeto *models.Project) error {
-	rows, err := s.db.Query("SELECT * FROM tasks WHERE project_id = ?", projeto.ID)
-	if err != nil {
-		return err
-	}
 	defer rows.Close()
 
-	var tasks []*models.Task
+	projeto := &models.Project{}
+	tasksMap := make(map[int]*models.Task)
+
 	for rows.Next() {
-		t := &models.Task{}
-		err = rows.Scan(&t.ID, &t.Name, &t.Description, &t.StartDate, &t.EndDate, &t.Status, &t.ProjectId)
+		var task models.Task
+		err = rows.Scan(&projeto.ID, &projeto.Name, &projeto.Description, &projeto.StartDate, &projeto.EndDate, &projeto.Status,
+			&task.ID, &task.Name, &task.Description, &task.Owner, &task.StartDate, &task.EndDate, &task.Status, &task.ProjectId)
 		if err != nil {
-			return err
+			log.Printf("error scanning project and task. Err: %v", err)
+			return nil, err
 		}
-		tasks = append(tasks, t)
+
+		if task.ID > 0 && tasksMap[task.ID] == nil { // Verifica se a tarefa já foi adicionada para evitar duplicatas
+			tasksMap[task.ID] = &task
+		}
 	}
 
-	if err = rows.Err(); err != nil {
-		return err
+	// Converte o map de tarefas para uma slice e atribui ao projeto
+	for _, task := range tasksMap {
+		projeto.Tasks = append(projeto.Tasks, task)
 	}
 
-	projeto.Tasks = tasks
-	return nil
+	if projeto.ID == 0 { // Verifica se um projeto foi encontrado
+		return nil, fmt.Errorf("projeto não encontrado")
+	}
+
+	return projeto, nil
 }
 
 func (s *service) UpdateProject(projeto *models.Project) error {
@@ -63,24 +73,46 @@ func (s *service) DeleteProject(id int) error {
 }
 
 func (s *service) GetAllProject() ([]*models.Project, error) {
-	rows, err := s.db.Query("SELECT * FROM projects")
+	query := `SELECT p.id, p.name, p.description, p.start_date, p.end_date, p.status,t.id, t.name, t.description, t.responsible, t.start_date, t.end_date, t.status, t.project_id 
+			  FROM projects p
+			  LEFT JOIN tasks t ON p.id = t.project_id`
+	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var projetos []*models.Project
+	projetosMap := make(map[int]*models.Project)
 	for rows.Next() {
+		var projectId int
+		var task models.Task
 		projeto := &models.Project{}
-		err = rows.Scan(&projeto.ID, &projeto.Name, &projeto.Description, &projeto.StartDate, &projeto.EndDate, &projeto.Status)
+		err = rows.Scan(&projeto.ID, &projeto.Name, &projeto.Description, &projeto.StartDate, &projeto.EndDate, &projeto.Status,
+			&task.ID, &task.Name, &task.Description, &task.Owner, &task.StartDate, &task.EndDate, &task.Status, &task.ProjectId)
 		if err != nil {
+			log.Default().Printf("error scanning project and task. Err: %v", err)
 			return nil, err
 		}
-		projetos = append(projetos, projeto)
+
+		projectId = projeto.ID
+		if _, ok := projetosMap[projectId]; !ok {
+			projeto.Tasks = []*models.Task{}
+			projetosMap[projectId] = projeto
+		}
+
+		// Adiciona a tarefa ao projeto, se a tarefa tiver um ID válido (maior que 0)
+		if task.ID > 0 {
+			projetosMap[projectId].Tasks = append(projetosMap[projectId].Tasks, &task)
+		}
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
+	}
+
+	var projetos []*models.Project
+	for _, projeto := range projetosMap {
+		projetos = append(projetos, projeto)
 	}
 
 	return projetos, nil
