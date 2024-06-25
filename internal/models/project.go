@@ -14,10 +14,10 @@ const (
 
 type Project struct {
 	ID          int
-	Nome        sql.NullString
-	Descricao   sql.NullString
-	DataInicio  sql.NullTime
-	DataTermino sql.NullTime
+	Name        sql.NullString
+	Description sql.NullString
+	StartDate   sql.NullTime
+	EndDate     sql.NullTime
 	Status      ProjectStatus
 }
 

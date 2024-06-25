@@ -21,10 +21,10 @@ func (b *buscaTodosProjetos) Execute(in BuscaTodosProjetosIn) (BuscaTodosProjeto
 	for _, projeto := range projetos {
 		projetosOut = append(projetosOut, BuscaProjetoOut{
 			ID:          projeto.ID,
-			Nome:        projeto.Nome.String,
-			Descricao:   projeto.Descricao.String,
-			DataInicio:  projeto.DataInicio.Time,
-			DataTermino: projeto.DataTermino.Time,
+			Nome:        projeto.Name.String,
+			Descricao:   projeto.Description.String,
+			DataInicio:  projeto.StartDate.Time,
+			DataTermino: projeto.EndDate.Time,
 		})
 	}
 

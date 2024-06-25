@@ -28,10 +28,10 @@ func (b *buscaProjeto) Execute(in BuscaProjetoIn) (BuscaProjetoOut, error) {
 
 	return BuscaProjetoOut{
 		ID:          projeto.ID,
-		Nome:        projeto.Nome.String,
-		Descricao:   projeto.Descricao.String,
-		DataInicio:  projeto.DataInicio.Time,
-		DataTermino: projeto.DataTermino.Time,
+		Nome:        projeto.Name.String,
+		Descricao:   projeto.Description.String,
+		DataInicio:  projeto.StartDate.Time,
+		DataTermino: projeto.EndDate.Time,
 		Status:      string(projeto.Status),
 	}, nil
 }

@@ -26,10 +26,10 @@ type CreateProjectOut struct {
 
 func (c *createProject) Execute(input CreateProjectIn) (CreateProjectOut, error) {
 	projeto := &models.Project{
-		Nome:        sql.NullString{String: input.Nome, Valid: true},
-		Descricao:   sql.NullString{String: input.Descricao, Valid: true},
-		DataInicio:  sql.NullTime{Time: input.DataInicio, Valid: true},
-		DataTermino: sql.NullTime{Time: input.DataTermino, Valid: true},
+		Name:        sql.NullString{String: input.Nome, Valid: true},
+		Description: sql.NullString{String: input.Descricao, Valid: true},
+		StartDate:   sql.NullTime{Time: input.DataInicio, Valid: true},
+		EndDate:     sql.NullTime{Time: input.DataTermino, Valid: true},
 		Status:      models.ToProjectStatus(input.Status),
 	}
 

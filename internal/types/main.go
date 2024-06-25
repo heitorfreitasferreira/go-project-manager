@@ -46,11 +46,11 @@ func FromModelToProject(in models.Project, tasks ...models.Task) Project {
 
 	return Project{
 		ID:          in.ID,
-		Name:        in.Nome.String,
-		Description: in.Descricao.String,
+		Name:        in.Name.String,
+		Description: in.Description.String,
 
-		StartDate: in.DataInicio.Time,
-		EndDate:   in.DataTermino.Time,
+		StartDate: in.StartDate.Time,
+		EndDate:   in.EndDate.Time,
 		Status:    in.Status,
 		Tasks:     tasksDto,
 	}

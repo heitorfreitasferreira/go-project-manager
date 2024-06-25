@@ -13,13 +13,13 @@ type ProjectRepository interface {
 
 func (s *service) CreateProject(projeto *models.Project) error {
 	_, err := s.db.Exec("INSERT INTO projects (`name`, `description`, `start_date`, `end_date`, `status`) VALUES (?, ?, ?, ?, ?)",
-		projeto.Nome, projeto.Descricao, projeto.DataInicio, projeto.DataTermino, projeto.Status)
+		projeto.Name, projeto.Description, projeto.StartDate, projeto.EndDate, projeto.Status)
 	return err
 }
 
 func (s *service) GetProjectoByID(id int) (*models.Project, error) {
 	projeto := &models.Project{}
-	err := s.db.QueryRow("SELECT * FROM projects WHERE id = ?", id).Scan(&projeto.ID, &projeto.Nome, &projeto.Descricao, &projeto.DataInicio, &projeto.DataTermino, &projeto.Status)
+	err := s.db.QueryRow("SELECT * FROM projects WHERE id = ?", id).Scan(&projeto.ID, &projeto.Name, &projeto.Description, &projeto.StartDate, &projeto.EndDate, &projeto.Status)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (s *service) GetProjectoByID(id int) (*models.Project, error) {
 
 func (s *service) UpdateProject(projeto *models.Project) error {
 	_, err := s.db.Exec("UPDATE projects SET `name` = ?, `description` = ?, `start_date` = ?, `end_date` = ?, `status` = ? WHERE id = ?",
-		projeto.Nome, projeto.Descricao, projeto.DataInicio, projeto.DataTermino, projeto.Status, projeto.ID)
+		projeto.Name, projeto.Description, projeto.StartDate, projeto.EndDate, projeto.Status, projeto.ID)
 	return err
 }
 
@@ -47,7 +47,7 @@ func (s *service) GetAllProject() ([]*models.Project, error) {
 	var projetos []*models.Project
 	for rows.Next() {
 		projeto := &models.Project{}
-		err = rows.Scan(&projeto.ID, &projeto.Nome, &projeto.Descricao, &projeto.DataInicio, &projeto.DataTermino, &projeto.Status)
+		err = rows.Scan(&projeto.ID, &projeto.Name, &projeto.Description, &projeto.StartDate, &projeto.EndDate, &projeto.Status)
 		if err != nil {
 			return nil, err
 		}
