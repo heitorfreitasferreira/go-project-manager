@@ -1,0 +1,43 @@
+package views
+
+templ Base() {
+	<!DOCTYPE html>
+	<html lang="pt">
+		<head>
+			<meta charset="utf-8"/>
+			<title>Project Manager</title>
+			<script src="assets/js/htmx.min.js"></script>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"/>
+		</head>
+		<body class="bg-gray-100 p-6">
+			<main class="container mx-auto">
+				<h1 class="text-2xl font-bold mb-4">Project and Task Management</h1>
+				<div>
+					{ children... }
+					@ProjectAdder()
+				</div>
+			</main>
+		</body>
+	</html>
+}
+
+templ ViewProjects() {
+	@Base() {
+		<div hx-get="/htmx/project" hx-trigger="load" hx-swap="outerHTML">
+			<img src="/assets/svg/loading.svg" class="htmx-indicator" alt="loading" width="120px"/>
+		</div>
+	}
+}
+
+templ ProjectAdder() {
+	<div class="mb-4">
+		<h2 class="text-xl font-semibold">Add New Project</h2>
+		<form hx-post="/htmx/project" hx-target="#project-list" hx-swap="beforeend">
+			<input type="text" name="name" placeholder="Project Name" class="border px-2 py-1 mb-2 block"/>
+			<textarea name="description" placeholder="Project Description" class="border px-2 py-1 mb-2 block"></textarea>
+			<input type="date" name="start_date" class="border px-2 py-1 mb-2 block"/>
+			<input type="date" name="end_date" class="border px-2 py-1 mb-2 block"/>
+			<button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Add Project</button>
+		</form>
+	</div>
+}

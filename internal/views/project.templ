@@ -1,0 +1,25 @@
+package views
+
+import "github.com/heitorfreitasferreira/go-project-manager/internal/types"
+
+templ ViewAllProjects(projects []types.Project) {
+	<div class="mb-4">
+		<h1>Projects</h1>
+		<ul id="project-list">
+			for _, project := range projects {
+				@ViewSingleProject(project)
+			}
+		</ul>
+	</div>
+}
+
+templ ViewSingleProject(project types.Project) {
+	<li>
+		<h2>{ project.Name }</h2>
+		<p>{ project.Description }</p>
+		// if project.Status != models.{
+		@viewTasks(project.Tasks)
+		@taskAdder(project.ID)
+		// }
+	</li>
+}

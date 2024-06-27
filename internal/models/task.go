@@ -14,7 +14,7 @@ const (
 )
 
 type Task struct {
-	ID          int
+	ID          sql.NullInt64
 	Name        sql.NullString
 	Description sql.NullString
 	Owner       sql.NullString
@@ -25,5 +25,5 @@ type Task struct {
 }
 
 func (t *Task) String() string {
-	return fmt.Sprintf("Task: ID: %d, Name: %s, Description: %s, Owner: %s, StartDate: %v, EndDate: %v, Status: %s, ProjectId: %d", t.ID, t.Name.String, t.Description.String, t.Owner.String, t.StartDate.Time, t.EndDate.Time, t.Status, t.ProjectId)
+	return fmt.Sprintf("Task: ID: %d, Name: %s, Description: %s, Owner: %s, StartDate: %v, EndDate: %v, Status: %s, ProjectId: %d", t.ID.Int64, t.Name.String, t.Description.String, t.Owner.String, t.StartDate.Time, t.EndDate.Time, t.Status, t.ProjectId)
 }

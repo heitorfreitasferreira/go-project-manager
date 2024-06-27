@@ -6,6 +6,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/heitorfreitasferreira/go-project-manager/cmd/web"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/views"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -19,10 +20,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Get("/health", s.healthHandler)
 
 	r.Handle("/assets/*", http.FileServer(http.FS(web.Files)))
-	r.Get("/", templ.Handler(web.ViewProjects()).ServeHTTP)
-	// r.Get("/htmx/projects", web.ViewProjectsHandler)
+	r.Get("/", templ.Handler(views.ViewProjects()).ServeHTTP)
 
-	r.Post("/hello", web.HelloWebHandler)
 	r.Mount("/api", s.apiRouter())
 	r.Mount("/htmx", s.htmxRouter())
 	return r
@@ -43,7 +42,7 @@ func (s *Server) apiRouter() http.Handler {
 
 func (s *Server) htmxRouter() http.Handler {
 	r := chi.NewRouter()
-	r.Get("/projects", web.ViewProjectsHandler)
+	r.Mount("/project", s.htmxProjectRouter())
 	r.Post("/tasks/{id}", web.AddTaskHandler)
 	return r
 }

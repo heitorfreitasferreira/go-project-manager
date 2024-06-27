@@ -1,0 +1,26 @@
+package views
+
+import (
+	"github.com/heitorfreitasferreira/go-project-manager/internal/types"
+)
+
+templ viewTasks(tasks []types.Task) {
+	<ul>
+		for _, task := range tasks {
+			<li>
+				<h3>{ task.Title }</h3>
+				<p>{ task.Description }</p>
+			</li>
+		}
+	</ul>
+}
+
+templ taskAdder(projectID int) {
+	<form hx-post="/htmx/tasks/{projectID}" hx-trigger="submit" hx-swap="outerHTML">
+		<input type="text" name="title" placeholder="Task title"/>
+		<input type="text" name="description" placeholder="Task description"/>
+		<input type="datetime-local" id="start_time" name="start_time"/>
+		<input type="datetime-local" id="end_time" name="end_time"/>
+		<button type="submit">Add Task</button>
+	</form>
+}

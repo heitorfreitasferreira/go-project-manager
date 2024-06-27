@@ -7,6 +7,7 @@ import (
 
 	"github.com/heitorfreitasferreira/go-project-manager/internal/database"
 	"github.com/heitorfreitasferreira/go-project-manager/internal/models"
+	"github.com/heitorfreitasferreira/go-project-manager/internal/types"
 )
 
 type createProject struct {
@@ -21,9 +22,7 @@ type CreateProjectIn struct {
 	Status      string    `json:"status"`
 }
 
-type CreateProjectOut struct {
-	ID int
-}
+type CreateProjectOut types.Project
 
 func (c *createProject) Execute(input CreateProjectIn) (CreateProjectOut, error) {
 	projeto := &models.Project{
@@ -40,5 +39,6 @@ func (c *createProject) Execute(input CreateProjectIn) (CreateProjectOut, error)
 		return CreateProjectOut{}, err
 	}
 
-	return CreateProjectOut{ID: projeto.ID}, nil
+	out := types.FromModelToProject(*projeto)
+	return CreateProjectOut(out), nil
 }

@@ -27,7 +27,7 @@ func (b *findAllProjects) Execute(in FindProjectsIn) (FindAllProjectsOut, error)
 		var tasksOut []types.Task
 		for _, task := range projeto.Tasks {
 			tasksOut = append(tasksOut, types.Task{
-				ID:          task.ID,
+				ID:          int(task.ID.Int64),
 				Title:       task.Name.String,
 				Description: task.Description.String,
 				StartDate:   task.StartDate.Time,

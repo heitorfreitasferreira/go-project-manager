@@ -29,7 +29,7 @@ type Project struct {
 
 func FromModelToTask(in models.Task) Task {
 	return Task{
-		ID:          in.ID,
+		ID:          int(in.ID.Int64),
 		Title:       in.Name.String,
 		Description: in.Description.String,
 		Owner:       in.Owner.String,

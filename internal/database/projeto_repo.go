@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -33,7 +34,7 @@ func (s *service) GetProjectoByID(id int) (*models.Project, error) {
 	defer rows.Close()
 
 	projeto := &models.Project{}
-	tasksMap := make(map[int]*models.Task)
+	tasksMap := make(map[int64]*models.Task)
 
 	for rows.Next() {
 		var task models.Task
@@ -44,8 +45,8 @@ func (s *service) GetProjectoByID(id int) (*models.Project, error) {
 			return nil, err
 		}
 
-		if task.ID > 0 && tasksMap[task.ID] == nil { // Verifica se a tarefa já foi adicionada para evitar duplicatas
-			tasksMap[task.ID] = &task
+		if task.ID.Valid && tasksMap[task.ID.Int64] == nil { // Verifica se a tarefa já foi adicionada para evitar duplicatas
+			tasksMap[task.ID.Int64] = &task
 		}
 	}
 
@@ -73,9 +74,7 @@ func (s *service) DeleteProject(id int) error {
 }
 
 func (s *service) GetAllProject() ([]*models.Project, error) {
-	query := `SELECT p.id, p.name, p.description, p.start_date, p.end_date, p.status,t.id, t.name, t.description, t.responsible, t.start_date, t.end_date, t.status, t.project_id 
-			  FROM projects p
-			  LEFT JOIN tasks t ON p.id = t.project_id`
+	query := `SELECT p.id, p.name, p.description, p.start_date, p.end_date, p.status FROM projects p`
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -84,36 +83,55 @@ func (s *service) GetAllProject() ([]*models.Project, error) {
 
 	projetosMap := make(map[int]*models.Project)
 	for rows.Next() {
-		var projectId int
-		var task models.Task
 		projeto := &models.Project{}
-		err = rows.Scan(&projeto.ID, &projeto.Name, &projeto.Description, &projeto.StartDate, &projeto.EndDate, &projeto.Status,
-			&task.ID, &task.Name, &task.Description, &task.Owner, &task.StartDate, &task.EndDate, &task.Status, &task.ProjectId)
+		err = rows.Scan(&projeto.ID, &projeto.Name, &projeto.Description, &projeto.StartDate, &projeto.EndDate, &projeto.Status)
 		if err != nil {
-			log.Default().Printf("error scanning project and task. Err: %v", err)
+			log.Default().Printf("error scanning project Err: %v", err)
 			return nil, err
 		}
 
-		projectId = projeto.ID
-		if _, ok := projetosMap[projectId]; !ok {
-			projeto.Tasks = []*models.Task{}
-			projetosMap[projectId] = projeto
-		}
-
-		// Adiciona a tarefa ao projeto, se a tarefa tiver um ID válido (maior que 0)
-		if task.ID > 0 {
-			projetosMap[projectId].Tasks = append(projetosMap[projectId].Tasks, &task)
-		}
+		projetosMap[projeto.ID] = projeto
 	}
 
+	projetos, err := s.loadAllTasks(projetosMap)
+	if err != nil {
+		return nil, errors.New("error loading tasks")
+	}
+	return projetos, nil
+}
+
+func (s *service) loadAllTasks(projectMap map[int]*models.Project) ([]*models.Project, error) {
+	query := `SELECT id, name, description, responsible, start_date, end_date, status, project_id FROM tasks`
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var task models.Task
+		err = rows.Scan(&task.ID, &task.Name, &task.Description, &task.Owner, &task.StartDate, &task.EndDate, &task.Status, &task.ProjectId)
+		if err != nil {
+			log.Printf("error scanning task. Err: %v", err)
+			return nil, err
+		}
+
+		if _, ok := projectMap[task.ProjectId]; ok {
+			if projectMap[task.ProjectId].Tasks == nil {
+				projectMap[task.ProjectId].Tasks = []*models.Task{
+					&task,
+				}
+				continue
+			}
+			projectMap[task.ProjectId].Tasks = append(projectMap[task.ProjectId].Tasks, &task)
+		}
+	}
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-
 	var projetos []*models.Project
-	for _, projeto := range projetosMap {
+	for _, projeto := range projectMap {
 		projetos = append(projetos, projeto)
 	}
-
 	return projetos, nil
 }
