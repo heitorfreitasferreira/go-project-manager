@@ -35,3 +35,6 @@ main
 *.db
 *.db-journal
 *.session.sql
+
+
+vendor

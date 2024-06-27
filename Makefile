@@ -21,6 +21,7 @@ test:
 clean:
 	@echo "Cleaning..."
 	@rm -f main *.db
+	@rm -rf vendor
 
 # Live Reload
 watch:
